@@ -1,0 +1,7 @@
+Functionality to add:
+
+	add a ' clear all' button
+	add a cancel button
+	generate a random incomplete sudoku
+	drop down menu for different solving methods
+	implement different solving methods
