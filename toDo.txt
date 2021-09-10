@@ -1,7 +1,12 @@
 Functionality to add:
 
-	add a ' clear all' button
 	add a cancel button
 	generate a random incomplete sudoku
 	drop down menu for different solving methods
-	implement different solving methods
+
+	implement constraint programming solve function
+	implement a hybrid constraint/backtracking solution
+	generate sudokus that have unique solutions
+	generate sudokus in which no given clue is a logical consequence of the other clues
+	be able to check that a given sudoku is well-posed (i.e. has only one solution)
+	

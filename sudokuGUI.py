@@ -48,6 +48,7 @@ buttonArray = []
 buttonArray.append(Button("Solve Me!", None, 48, "blue", 250, 610, 155, 30))
 buttonArray.append(Button("Generate Random!", None, 48, "green", 175, 565, 304, 30))
 buttonArray.append(Button("Clear", None, 28, "red", 50, 50, 52, 18))
+buttonArray.append(Button("Cancel", None, 48, "red", 250, 610, 155, 30))
 # text output area
 textOut = Textbox("", None, 25, "white", 228, 75, 200, 20)
 
@@ -152,7 +153,8 @@ while running:
             # if clicked on the solve button
             for button in buttonArray:
                 if ( button.getName() == "Solve Me!" ) and ( button.rectangle.collidepoint(event.pos) == True):
-                    testSudoku.visualSolve(screen)
+                    copy = testSudoku.copy()
+                    testSudoku.visualSolve(screen, buttonArray[3], copy)
                     break
                 elif ( button.getName() == "Generate Random!" )  and ( button.rectangle.collidepoint(event.pos) == True ):
                     print("This will eventually generate a random solveable sudoku lol")
@@ -176,7 +178,8 @@ while running:
     testSudoku.drawSudoku(screen)
     # draw buttons
     for button in buttonArray:
-        button.drawButton(screen)
+        if button.getName() != "Cancel":
+            button.drawButton(screen)
     textOut.draw(screen)
     # draw call for pygame
     pygame.display.flip()

@@ -14,6 +14,7 @@ class Button:
         self.fontName = fontName
         self.fontSize = fontSize
 
+
     def getName(self):
         return self.name
 
@@ -45,6 +46,9 @@ class Textbox:
         pygame.draw.rect(screen, pygame.Color(self.colour), self.rectangle)
         screen.blit(self.textSurface, ((self.rectangle.x), (self.rectangle.y)))
 
+# dropdown box class
+class Dropdown:
+    pass
 
 # sudoku single box class
 class MiniBox:
@@ -56,6 +60,11 @@ class MiniBox:
         self.textSurface = baseFont.render(str(self.value), True, (0, 0, 0))
         self.active = False
         self.colour = "black"
+        if self.value == 0:
+            self.possibleValues = [x for x in range(1, 10)]
+        else:
+            self.possibleValues = [self.value]
+
 
     def setValue(self, newValue):
         self.value = newValue
@@ -68,6 +77,12 @@ class MiniBox:
 
     def getBoxPos(self):
         return (self.rectangle.x, self.rectangle.y)
+
+    def getPossibleValues(self):
+        return self.possibleValues
+
+    def removePossibleValue(self, x):
+        self.possibleValues.remove(x)
 
     # methods/functions
     def drawBox(self, screen):
@@ -96,6 +111,15 @@ class Sudoku:
         self.boxArray = [MiniBox(0, ((x % 9)*50)+self.offset, ((x // 9)*50)+self.offset ) for x in range(81)]
         # make array of big rectangles big rectangles to show big boxes
         self.bigRects = [pygame.Rect( ((x % 3)*150)+self.offset, ((x // 3)*150)+self.offset, 150, 150) for x in range(9)]
+
+    # creates a copy of the sudoku
+    def copy(self):
+        copy = Sudoku()
+        for box in self.getBoxArray():
+            i = self.getBoxArray().index(box)
+            copy.getBoxArray()[i].setValue(box.getValue())
+        return copy
+
 
     # goes through boxes top to bottom and left to right and returns to the first box with value = 0
     def findNextEmpty(self):
@@ -132,16 +156,16 @@ class Sudoku:
         return True
 
     # solves the sudoku
-    def visualSolve(self, screen):
-
-        # make and draw a cancel button
-
+    def visualSolve(self, screen, cancelButton, copy):
         # hande events during solving
         for event in pygame.event.get():
             # make program quitable during solve
             if event.type == pygame.QUIT:
                 exit()
-            # make solve cancelable
+            # elif event.type == pygame.MOUSEBUTTONDOWN:
+            #     if cancelButton.rectangle.collidepoint(event.pos):
+            #         self = copy
+            #         break
 
         # deselect any active box
         for box in self.getBoxArray():
@@ -157,9 +181,10 @@ class Sudoku:
             box.setValue(i)
             screen.fill((255,255,255))
             self.drawSudoku(screen)
+            cancelButton.drawButton(screen)
             pygame.display.flip()
             if self.isValidNumber(box) == True:
-                if self.visualSolve(screen) == True:
+                if self.visualSolve(screen, cancelButton, copy) == True:
                     return True
         box.deleteValue()
         return False
@@ -193,3 +218,8 @@ class Sudoku:
             if box.getActiveState() == True:
                 boxPos = box.getBoxPos()
                 pygame.draw.rect(screen, pygame.Color("red"), pygame.Rect(boxPos[0], boxPos[1], 50, 50), 2)
+
+    # rules based solver: this will convert empty squares into a 9-long list of bools that represent whether it is logically possible
+    # for a squre to contain the number that is the index of the bool
+
+    # scanning
